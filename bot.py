@@ -13,6 +13,7 @@ GUILD = os.getenv('DISCORD_GUILD')
 
 bot = commands.Bot(command_prefix='!')
 
+
 @bot.event
 async def on_ready():
     for guild in bot.guilds:
@@ -27,6 +28,7 @@ async def on_ready():
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
 
+
 @bot.event
 async def on_member_join(member):
     await member.create_dm()
@@ -34,9 +36,10 @@ async def on_member_join(member):
         f'Hi {member.name}, welcome to my Discord server!'
     )
 
+
 @bot.command(name='99', help='Responds with a random quote from Brooklyn 99')
-async def nine_nine(message):
-    if message.author == bot.user:
+async def nine_nine(ctx):
+    if ctx.author == bot.user:
         return
 
     brooklyn_99_quotes = [
@@ -48,14 +51,14 @@ async def nine_nine(message):
         ),
     ]
 
-    if message.content == '99!':
-        response = random.choice(brooklyn_99_quotes)
-        await message.channel.send(response)
+    response = random.choice(brooklyn_99_quotes)
+    await ctx.send(response)
 
-bot.run(TOKEN)
 
-@bot.command(name='invite')
+@bot.command(name='invite', help='Invite bot to your channel')
 async def invite(ctx):
     inv = bot_commands.getInviteEmbed(ctx)
     await ctx.author.send(embed=inv)
     await ctx.send(f'The invite link has been sent to your DM {ctx.author.mention} :D')
+
+bot.run(TOKEN)
