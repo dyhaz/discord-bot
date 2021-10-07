@@ -5,6 +5,8 @@ import random
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from source import bot_commands
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
@@ -51,3 +53,9 @@ async def nine_nine(message):
         await message.channel.send(response)
 
 bot.run(TOKEN)
+
+@bot.command(name='invite')
+async def invite(ctx):
+    inv = bot_commands.getInviteEmbed(ctx)
+    await ctx.author.send(embed=inv)
+    await ctx.send(f'The invite link has been sent to your DM {ctx.author.mention} :D')
