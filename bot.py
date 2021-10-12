@@ -3,6 +3,7 @@ import os
 import random
 
 from discord.ext import commands
+from source.helpers.tweet_feed import TwitterAPI
 from dotenv import load_dotenv
 
 from source import bot_commands
@@ -60,5 +61,19 @@ async def invite(ctx):
     inv = bot_commands.getInviteEmbed(ctx)
     await ctx.author.send(embed=inv)
     await ctx.send(f'The invite link has been sent to your DM {ctx.author.mention} :D')
+
+
+@bot.event
+async def on_post_tweet(raw_data):
+    for guild in bot.guilds:
+        if guild.name == GUILD:
+            break
+
+    c = bot.get_guild(guild.id)
+    await c.send(raw_data.text)
+
+# Initialize twitter API
+twitter_api = TwitterAPI()
+twitter_api.create_stream(bot)
 
 bot.run(TOKEN)

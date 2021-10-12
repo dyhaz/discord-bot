@@ -8,10 +8,12 @@ CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
 ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
 ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 
+
 class TwitterAPI:
     def __init__(self):
         self.auth = {}
         self.api = {}
+        self.stream = {}
         self.user = "alhadie_"
 
     def authenticate(self):
@@ -54,3 +56,37 @@ class TwitterAPI:
             print(info.created_at)
             print(info.full_text)
             print("\n")
+
+    def create_stream(self, discord_bot=None):
+        self.stream = TweetStreamer(
+            CONSUMER_KEY, CONSUMER_SECRET,
+            ACCESS_TOKEN, ACCESS_TOKEN_SECRET
+        )
+
+        # Select bot to post messages
+        self.stream.bot = discord_bot
+
+        # Stream specific twitter ids
+        self.stream.filter(follow=[1168336921237409792])
+
+
+class TweetStreamer(tweepy.Stream):
+
+    def __init__(self, consumer_key, consumer_secret, access_token,
+                 access_token_secret):
+        super().__init__(consumer_key, consumer_secret, access_token, access_token_secret)
+        self.bot = None
+
+    def on_connection_error(self):
+        print('stream error')
+        self.disconnect()
+
+    def on_status(self, status):
+        print(status.id)
+
+    def on_data(self, raw_data):
+        if self.bot:
+            self.bot.dispatch("post_tweet", raw_data)
+        else:
+            print('raw_data')
+            print(raw_data)
