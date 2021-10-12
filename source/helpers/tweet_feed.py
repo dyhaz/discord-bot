@@ -16,21 +16,24 @@ class TwitterAPI:
 
     def authenticate(self):
         # Authenticate to Twitter
-        self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-        self.auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+        if not self.auth:
+            self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+            self.auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+
         return self.auth
 
     def create_api(self):
         # Create API object
-        api = tweepy.API(self.authenticate())
+        if not self.api:
+            self.api = tweepy.API(self.authenticate())
 
         try:
-            api.verify_credentials()
+            self.api.verify_credentials()
             print("Authentication OK")
         except:
             print("Error during authentication")
 
-        return api
+        return self.api
 
     def extract_tweets(self):
         # Select user id
