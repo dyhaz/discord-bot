@@ -65,6 +65,8 @@ async def invite(ctx):
 
 @bot.event
 async def on_post_tweet(raw_data):
+    print('posting tweet...')
+
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
@@ -72,8 +74,10 @@ async def on_post_tweet(raw_data):
     c = bot.get_guild(guild.id)
     await c.send(raw_data.text)
 
-# Initialize twitter API
-twitter_api = TwitterAPI()
-twitter_api.create_stream(bot)
+
+async def start_stream(bot):
+    # Initialize twitter API
+    twitter_api = TwitterAPI()
+    await twitter_api.create_stream(bot)
 
 bot.run(TOKEN)

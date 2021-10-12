@@ -57,7 +57,8 @@ class TwitterAPI:
             print(info.full_text)
             print("\n")
 
-    def create_stream(self, discord_bot=None):
+    async def create_stream(self, discord_bot=None):
+        print('create stream...')
         self.stream = TweetStreamer(
             CONSUMER_KEY, CONSUMER_SECRET,
             ACCESS_TOKEN, ACCESS_TOKEN_SECRET
@@ -90,3 +91,6 @@ class TweetStreamer(tweepy.Stream):
         else:
             print('raw_data')
             print(raw_data)
+
+    def on_connect(self):
+        print('stream connected')
