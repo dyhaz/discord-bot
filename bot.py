@@ -28,6 +28,7 @@ async def on_ready():
 
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
+    bot.loop.create_task(start_stream(bot))
 
 
 @bot.event
@@ -36,6 +37,12 @@ async def on_member_join(member):
     await member.dm_channel.send(
         f'Hi {member.name}, welcome to my Discord server!'
     )
+
+
+@bot.command(name='ping', help='Ping')
+async def ping(ctx):
+    print(f"{ctx.author} ping")
+    await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
 
 
 @bot.command(name='99', help='Responds with a random quote from Brooklyn 99')
@@ -65,8 +72,6 @@ async def invite(ctx):
 
 @bot.event
 async def on_post_tweet(raw_data):
-    print('posting tweet...')
-
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
@@ -75,9 +80,9 @@ async def on_post_tweet(raw_data):
     await c.send(raw_data.text)
 
 
-async def start_stream(bot):
+async def start_stream(test_bot):
     # Initialize twitter API
     twitter_api = TwitterAPI()
-    await twitter_api.create_stream(bot)
+    await twitter_api.create_stream(test_bot)
 
 bot.run(TOKEN)

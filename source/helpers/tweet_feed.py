@@ -57,7 +57,7 @@ class TwitterAPI:
             print(info.full_text)
             print("\n")
 
-    async def create_stream(self, discord_bot=None):
+    async def create_stream(self, discord_bot=None, follow_id=1168336921237409792):
         print('create stream...')
         self.stream = TweetStreamer(
             CONSUMER_KEY, CONSUMER_SECRET,
@@ -68,7 +68,10 @@ class TwitterAPI:
         self.stream.bot = discord_bot
 
         # Stream specific twitter ids
-        self.stream.filter(follow=[1168336921237409792])
+        self.stream.filter(follow=[follow_id])
+
+        # Stream hashtag
+        # self.stream.filter(track=['#HOLODEATH'])
 
 
 class TweetStreamer(tweepy.Stream):
@@ -86,11 +89,11 @@ class TweetStreamer(tweepy.Stream):
         print(status.id)
 
     def on_data(self, raw_data):
+        print('raw_data')
+        print(raw_data)
+
         if self.bot:
             self.bot.dispatch("post_tweet", raw_data)
-        else:
-            print('raw_data')
-            print(raw_data)
 
     def on_connect(self):
         print('stream connected')
