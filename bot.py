@@ -1,6 +1,8 @@
 # bot.py
+import asyncio
 import os
 import random
+import json
 
 from discord.ext import commands
 from source.helpers.tweet_feed import TwitterAPI
@@ -17,6 +19,7 @@ bot = commands.Bot(command_prefix='!')
 
 @bot.event
 async def on_post_tweet(raw_data):
+    data = json.loads(raw_data)
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
@@ -24,8 +27,7 @@ async def on_post_tweet(raw_data):
     g = bot.get_guild(guild.id)
     for c in g.channels:
         try:
-            print('send message', raw_data.text)
-            await c.send(raw_data.text)
+            await c.send(data['text'])
         except Exception:
             continue
         else:
@@ -86,10 +88,12 @@ async def invite(ctx):
     await ctx.send(f'The invite link has been sent to your DM {ctx.author.mention} :D')
 
 
-async def start_stream(test_bot):
+async def start_stream():
     # Initialize twitter API
     twitter_api = TwitterAPI()
-    await twitter_api.create_stream(discord_bot=test_bot)
+    await asyncio.sleep(10)
+    await twitter_api.create_stream(discord_bot=bot)
 
-bot.loop.create_task(start_stream(bot))
+
+bot.loop.create_task(start_stream())
 bot.run(TOKEN)
