@@ -68,10 +68,10 @@ class TwitterAPI:
         self.stream.bot = discord_bot
 
         # Stream specific twitter ids
-        self.stream.filter(follow=[follow_id])
+        self.stream.filter(follow=[follow_id], threaded=True)
 
         # Stream hashtag
-        # self.stream.filter(track=['#HOLODEATH'])
+        # self.stream.filter(track=['#HOLODEATH'], threaded=True)
 
 
 class TweetStreamer(tweepy.Stream):
@@ -89,9 +89,6 @@ class TweetStreamer(tweepy.Stream):
         print(status.id)
 
     def on_data(self, raw_data):
-        print('raw_data')
-        print(raw_data)
-
         if self.bot:
             self.bot.dispatch("post_tweet", raw_data)
 

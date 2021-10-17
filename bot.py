@@ -16,6 +16,23 @@ bot = commands.Bot(command_prefix='!')
 
 
 @bot.event
+async def on_post_tweet(raw_data):
+    for guild in bot.guilds:
+        if guild.name == GUILD:
+            break
+
+    g = bot.get_guild(guild.id)
+    for c in g.channels:
+        try:
+            print('send message', raw_data.text)
+            await c.send(raw_data.text)
+        except Exception:
+            continue
+        else:
+            break
+
+
+@bot.event
 async def on_ready():
     for guild in bot.guilds:
         if guild.name == GUILD:
@@ -28,7 +45,6 @@ async def on_ready():
 
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
-    bot.loop.create_task(start_stream(bot))
 
 
 @bot.event
@@ -70,19 +86,10 @@ async def invite(ctx):
     await ctx.send(f'The invite link has been sent to your DM {ctx.author.mention} :D')
 
 
-@bot.event
-async def on_post_tweet(raw_data):
-    for guild in bot.guilds:
-        if guild.name == GUILD:
-            break
-
-    c = bot.get_guild(guild.id)
-    await c.send(raw_data.text)
-
-
 async def start_stream(test_bot):
     # Initialize twitter API
     twitter_api = TwitterAPI()
-    await twitter_api.create_stream(test_bot)
+    await twitter_api.create_stream(discord_bot=test_bot)
 
+bot.loop.create_task(start_stream(bot))
 bot.run(TOKEN)
