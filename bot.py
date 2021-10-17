@@ -25,13 +25,17 @@ async def on_post_tweet(raw_data):
             break
 
     g = bot.get_guild(guild.id)
+    # Send tweet to first channel in guild
     for c in g.channels:
         try:
             msg = tweet['text']
+            msg += f'\nhttps://twitter.com/{tweet["user"]["screen_name"]}/status/{tweet["id"]}'
             for url in tweet['entities']['urls']:
                 msg += '\n' + url['expanded_url']
+
             await c.send(msg)
-        except Exception:
+        except Exception as e:
+            print(e)
             continue
         else:
             break
