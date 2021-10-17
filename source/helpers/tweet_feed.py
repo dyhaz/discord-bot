@@ -68,10 +68,10 @@ class TwitterAPI:
         self.stream.bot = discord_bot
 
         # Stream specific twitter ids
-        # self.stream.filter(follow=[follow_id], threaded=True)
+        self.stream.filter(follow=[follow_id], threaded=True)
 
         # Stream hashtag
-        self.stream.filter(track=['#WELOVEYOUTWICE'], threaded=True)
+        # self.stream.filter(track=['#WELOVEYOUTWICE'], threaded=True)
 
 
 class TweetStreamer(tweepy.Stream):

@@ -19,7 +19,7 @@ bot = commands.Bot(command_prefix='!')
 
 @bot.event
 async def on_post_tweet(raw_data):
-    data = json.loads(raw_data)
+    tweet = json.loads(raw_data)
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
@@ -27,7 +27,10 @@ async def on_post_tweet(raw_data):
     g = bot.get_guild(guild.id)
     for c in g.channels:
         try:
-            await c.send(data['text'])
+            msg = tweet['text']
+            for url in tweet['entities']['urls']:
+                msg += '\n' + url['expanded_url']
+            await c.send(msg)
         except Exception:
             continue
         else:
