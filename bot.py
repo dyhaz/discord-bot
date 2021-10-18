@@ -12,7 +12,6 @@ from source import bot_commands
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-# GUILD = os.getenv('DISCORD_GUILD')
 
 bot = commands.Bot(command_prefix='!')
 TWITTER_FOLLOW_IDS = json.loads(os.getenv('TWITTER_FOLLOW_IDS'))
@@ -26,9 +25,6 @@ async def on_post_tweet(raw_data):
         return
 
     for guild in bot.guilds:
-        # if guild.name == GUILD:
-        #     break
-
         g = bot.get_guild(guild.id)
         # Send tweet to first channel in guild
         for c in g.channels:
@@ -50,9 +46,6 @@ async def on_post_tweet(raw_data):
 @bot.event
 async def on_ready():
     for guild in bot.guilds:
-        # if guild.name == GUILD:
-        #     break
-
         print(
             f'{bot.user} is connected to the following guild:\n'
             f'{guild.name}(id: {guild.id})'
