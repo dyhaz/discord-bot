@@ -15,11 +15,16 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 bot = commands.Bot(command_prefix='!')
+TWITTER_FOLLOW_IDS = json.loads(os.getenv('TWITTER_FOLLOW_IDS'))
 
 
 @bot.event
 async def on_post_tweet(raw_data):
     tweet = json.loads(raw_data)
+
+    if str(tweet['user']['id']) not in TWITTER_FOLLOW_IDS:
+        return
+
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
@@ -30,8 +35,9 @@ async def on_post_tweet(raw_data):
         try:
             msg = tweet['text']
             msg += f'\nhttps://twitter.com/{tweet["user"]["screen_name"]}/status/{tweet["id"]}'
-            for url in tweet['entities']['urls']:
-                msg += '\n' + url['expanded_url']
+            # Uncomment this to send original links
+            # for url in tweet['entities']['urls']:
+            #     msg += '\n' + url['expanded_url']
 
             await c.send(msg)
         except Exception as e:

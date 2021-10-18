@@ -1,12 +1,14 @@
 import tweepy
 import os
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
 CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
 ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN')
 ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+TWITTER_FOLLOW_IDS = json.loads(os.getenv('TWITTER_FOLLOW_IDS'))
 
 
 class TwitterAPI:
@@ -57,18 +59,22 @@ class TwitterAPI:
             print(info.full_text)
             print("\n")
 
-    async def create_stream(self, discord_bot=None, follow_id=1168336921237409792):
+    async def create_stream(self, discord_bot=None, follow_id=None):
         print('create stream...')
         self.stream = TweetStreamer(
             CONSUMER_KEY, CONSUMER_SECRET,
             ACCESS_TOKEN, ACCESS_TOKEN_SECRET
         )
 
+        # Define who to follow
+        if follow_id is None:
+            follow_id = TWITTER_FOLLOW_IDS
+
         # Select bot to post messages
         self.stream.bot = discord_bot
 
         # Stream specific twitter ids
-        self.stream.filter(follow=[follow_id], threaded=True)
+        self.stream.filter(follow=follow_id, threaded=True)
 
         # Stream hashtag
         # self.stream.filter(track=['#WELOVEYOUTWICE'], threaded=True)
