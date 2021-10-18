@@ -3,6 +3,7 @@ import asyncio
 import os
 import random
 import json
+import discord
 
 from discord.ext import commands
 from source.helpers.tweet_feed import TwitterAPI
@@ -59,6 +60,9 @@ async def on_post_tweet(raw_data):
 
 @bot.event
 async def on_ready():
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
+                                                        name=f"{len(bot.guilds)} servers!"))
+
     for guild in bot.guilds:
         print(
             f'{bot.user} is connected to the following guild:\n'
