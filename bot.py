@@ -12,7 +12,7 @@ from source import bot_commands
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
+# GUILD = os.getenv('DISCORD_GUILD')
 
 bot = commands.Bot(command_prefix='!')
 TWITTER_FOLLOW_IDS = json.loads(os.getenv('TWITTER_FOLLOW_IDS'))
@@ -26,40 +26,40 @@ async def on_post_tweet(raw_data):
         return
 
     for guild in bot.guilds:
-        if guild.name == GUILD:
-            break
+        # if guild.name == GUILD:
+        #     break
 
-    g = bot.get_guild(guild.id)
-    # Send tweet to first channel in guild
-    for c in g.channels:
-        try:
-            msg = tweet['text']
-            msg += f'\nhttps://twitter.com/{tweet["user"]["screen_name"]}/status/{tweet["id"]}'
-            # Uncomment this to send original links
-            # for url in tweet['entities']['urls']:
-            #     msg += '\n' + url['expanded_url']
+        g = bot.get_guild(guild.id)
+        # Send tweet to first channel in guild
+        for c in g.channels:
+            try:
+                msg = tweet['text']
+                msg += f'\nhttps://twitter.com/{tweet["user"]["screen_name"]}/status/{tweet["id"]}'
+                # Uncomment this to send original links
+                # for url in tweet['entities']['urls']:
+                #     msg += '\n' + url['expanded_url']
 
-            await c.send(msg)
-        except Exception as e:
-            print(e)
-            continue
-        else:
-            break
+                await c.send(msg)
+            except Exception as e:
+                print(e)
+                continue
+            else:
+                break
 
 
 @bot.event
 async def on_ready():
     for guild in bot.guilds:
-        if guild.name == GUILD:
-            break
+        # if guild.name == GUILD:
+        #     break
 
-    print(
-        f'{bot.user} is connected to the following guild:\n'
-        f'{guild.name}(id: {guild.id})'
-    )
+        print(
+            f'{bot.user} is connected to the following guild:\n'
+            f'{guild.name}(id: {guild.id})'
+        )
 
-    members = '\n - '.join([member.name for member in guild.members])
-    print(f'Guild Members:\n - {members}')
+        members = '\n - '.join([member.name for member in guild.members])
+        print(f'Guild Members:\n - {members}')
 
 
 @bot.event
