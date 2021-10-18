@@ -89,6 +89,8 @@ class TweetStreamer(tweepy.Stream):
 
     def on_connection_error(self):
         print('stream error')
+        if self.bot:
+            self.bot.dispatch("stream_error")
         self.disconnect()
 
     def on_status(self, status):

@@ -18,6 +18,20 @@ TWITTER_FOLLOW_IDS = json.loads(os.getenv('TWITTER_FOLLOW_IDS'))
 
 
 @bot.event
+async def on_stream_error():
+    for guild in bot.guilds:
+        g = bot.get_guild(guild.id)
+        # Send message to first channel in guild
+        for c in g.channels:
+            try:
+                await c.send(':warning: Connection error! Please contact administrator')
+            except Exception:
+                continue
+            else:
+                break
+
+
+@bot.event
 async def on_post_tweet(raw_data):
     tweet = json.loads(raw_data)
 
