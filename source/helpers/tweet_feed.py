@@ -93,6 +93,10 @@ class TweetStreamer(tweepy.Stream):
             self.bot.dispatch("stream_error")
         self.disconnect()
 
+    def on_request_error(self, status_code):
+        if self.bot:
+            self.bot.dispatch("stream_error", status_code)
+
     def on_status(self, status):
         print(status.id)
 
