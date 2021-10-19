@@ -60,9 +60,7 @@ async def on_post_tweet(raw_data):
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
-                                                        name=f"{len(bot.guilds)} servers!"))
-
+    await update_status()
     for guild in bot.guilds:
         print(
             f'{bot.user} is connected to the following guild:\n'
@@ -123,6 +121,20 @@ async def info(ctx):
     except Exception as e:
         await ctx.send(f'Error during processing the request: '
                        f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
+
+
+@bot.command(name='restart', help='Restart bot')
+@commands.is_owner()
+async def restart(ctx):
+    await bot.logout()
+    await bot.login(TOKEN)
+    await update_status()
+    await start_stream()
+
+
+async def update_status():
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
+                                                        name=f"{len(bot.guilds)} servers!"))
 
 
 async def start_stream():
