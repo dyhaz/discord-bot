@@ -59,6 +59,14 @@ class TwitterAPI:
             print(info.full_text)
             print("\n")
 
+    def extract_favorites(self):
+        tweet_list = []
+        for user_id in TWITTER_FOLLOW_IDS:
+            tweet_list.append(self.create_api().get_favorites(user_id=user_id, count=10))
+        for tweet in tweet_list:
+            print(tweet)
+        return tweet_list
+
     async def create_stream(self, discord_bot=None, follow_id=None):
         print('create stream...')
         self.stream = TweetStreamer(

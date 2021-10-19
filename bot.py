@@ -112,6 +112,15 @@ async def invite(ctx):
     await ctx.send(f'The invite link has been sent to your DM {ctx.author.mention} :D')
 
 
+@bot.command(name='info', help='Fetch latest info')
+async def info(ctx):
+    twitter_api = TwitterAPI()
+    favorites = twitter_api.extract_favorites()
+    for data in favorites:
+        href = f'\nhttps://twitter.com/{data.user.screen_name}/status/{data.id}'
+        await ctx.send(data.text + '\n' + href)
+
+
 async def start_stream():
     # Initialize twitter API
     twitter_api = TwitterAPI()
