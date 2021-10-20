@@ -129,7 +129,8 @@ async def restart(ctx):
     await bot.logout()
     await bot.login(TOKEN)
     await update_status()
-    await start_stream()
+    await bot.loop.create_task(start_stream())
+    await ctx.send(f':warning: Bot restarted')
 
 
 async def update_status():
