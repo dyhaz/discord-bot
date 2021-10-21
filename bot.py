@@ -126,11 +126,15 @@ async def info(ctx):
 @bot.command(name='restart', help='Restart bot')
 @commands.is_owner()
 async def restart(ctx):
-    await bot.logout()
-    await bot.login(TOKEN)
-    await update_status()
-    await bot.loop.create_task(start_stream())
-    await ctx.send(f':warning: Bot restarted')
+    try:
+        await bot.logout()
+        await bot.login(TOKEN)
+        await update_status()
+        await bot.loop.create_task(start_stream())
+        await ctx.send(f':warning: Bot restarted')
+    except Exception as e:
+        await ctx.send(f'Error during processing the request: '
+                       f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
 
 
 async def update_status():
