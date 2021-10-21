@@ -20,6 +20,7 @@ class TestTwitterBot(unittest.TestCase):
         self.twitter_api = TwitterAPI()
         favorites = self.twitter_api.extract_favorites()
         for favorite in favorites:
+            print(favorite.created_at)
             self.assertGreater(favorite.id, 0)
         self.assertGreater(len(favorites), 0)
 

@@ -2,6 +2,7 @@ import tweepy
 import os
 from dotenv import load_dotenv
 import json
+from datetime import datetime
 
 load_dotenv()
 CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
@@ -62,9 +63,11 @@ class TwitterAPI:
     def extract_favorites(self):
         tweet_list = []
         for user_id in TWITTER_FOLLOW_IDS:
-            user_tweets = self.create_api().get_favorites(user_id=user_id, count=2)
+            user_tweets = self.create_api().get_favorites(user_id=user_id, count=10)
             for tweet in user_tweets:
-                tweet_list.append(tweet)
+                # Check if tweet is within 24 hours
+                if (datetime.utcnow().replace(tzinfo=tweet.created_at.tzinfo) - tweet.created_at).days == 0:
+                    tweet_list.append(tweet)
         return tweet_list
 
     async def create_stream(self, discord_bot=None, follow_id=None):
