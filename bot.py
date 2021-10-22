@@ -115,9 +115,12 @@ async def info(ctx):
     twitter_api = TwitterAPI()
     try:
         favorites = twitter_api.extract_favorites()
-        for data in favorites:
-            href = f'\nhttps://twitter.com/{data.user.screen_name}/status/{data.id}'
-            await ctx.send(data.text + '\n' + href)
+        if len(favorites) == 0:
+            await ctx.send('No info :pensive:')
+        else:
+            for data in favorites:
+                href = f'\nhttps://twitter.com/{data.user.screen_name}/status/{data.id}'
+                await ctx.send(data.text + '\n' + href)
     except Exception as e:
         await ctx.send(f'Error during processing the request: '
                        f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
