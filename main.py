@@ -5,6 +5,7 @@
 import getopt
 import sys
 import source.telegram.bot
+import source.discord.bot
 
 
 def main(argv):
@@ -22,10 +23,13 @@ def main(argv):
             bot = arg
 
     # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi')  # Press Ctrl+F8 to toggle the breakpoint.
+    print(f'Launching the bot')  # Press Ctrl+F8 to toggle the breakpoint.
 
     if bot == 'telegram':
         source.telegram.bot.main()
+
+    if bot == 'discord':
+        source.discord.bot.main()
 
 
 # Press the green button in the gutter to run the script.

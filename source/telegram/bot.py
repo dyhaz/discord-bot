@@ -48,7 +48,7 @@ async def get_info():
     return favorites
 
 
-async def send_random_message(bot):
+async def send_each_10_seconds(bot):
     while True:
         await asyncio.sleep(10)
         # print('this is background process')
@@ -86,7 +86,7 @@ def main():
     updater.start_polling()
 
     # Run background thread
-    t = threading.Thread(target=asyncio.run, args=(send_random_message(updater.bot),))
+    t = threading.Thread(target=asyncio.run, args=(send_each_10_seconds(updater.bot),))
     t.start()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,

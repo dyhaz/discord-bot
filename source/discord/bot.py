@@ -131,11 +131,11 @@ async def info(ctx):
 async def restart(ctx):
     try:
         await bot.close()
-        await asyncio.sleep(5)
         await bot.login(TOKEN)
         await update_status()
         await bot.loop.create_task(start_stream())
         await bot.loop.create_task(bot.run())
+        await asyncio.sleep(5)
         await ctx.send(f':warning: Bot restarted')
     except Exception as e:
         await ctx.send(f'Error during processing the request: '
@@ -154,5 +154,10 @@ async def start_stream():
     await twitter_api.create_stream(discord_bot=bot)
 
 
-bot.loop.create_task(start_stream())
-bot.run(TOKEN)
+def main():
+    bot.loop.create_task(start_stream())
+    bot.run(TOKEN)
+
+
+if __name__ == '__main__':
+    main()
