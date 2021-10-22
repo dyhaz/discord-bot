@@ -44,23 +44,22 @@ def error(update, context):
 
 async def get_info():
     twitter_api = TwitterAPI()
-    try:
-        favorites = twitter_api.extract_favorites()
-        if len(favorites) == 0:
-            return 'No info :pensive:'
-        else:
-            for data in favorites:
-                href = f'\nhttps://twitter.com/{data.user.screen_name}/status/{data.id}'
-                return data.text + '\n' + href
-    except Exception as e:
-        return f'Error during processing the request: {type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}'
+    favorites = twitter_api.extract_favorites()
+    return favorites
 
 
 async def send_random_message(bot):
     while True:
         await asyncio.sleep(10)
         # print('this is background process')
-        bot.send_message(text=await get_info(), chat_id=-1001413657707)
+
+        favorites = await get_info()
+        if len(favorites) == 0:
+            bot.send_message(text='No message :pensive:', chat_id=-1001413657707)
+        else:
+            for data in favorites:
+                href = f'\nhttps://twitter.com/{data.user.screen_name}/status/{data.id}'
+                bot.send_message(text=data.text + '\n' + href, chat_id=-1001413657707)
 
 
 def main():
