@@ -127,10 +127,12 @@ async def info(ctx):
 @commands.is_owner()
 async def restart(ctx):
     try:
-        await bot.logout()
+        await bot.close()
+        await asyncio.sleep(5)
         await bot.login(TOKEN)
         await update_status()
         await bot.loop.create_task(start_stream())
+        await bot.run()
         await ctx.send(f':warning: Bot restarted')
     except Exception as e:
         await ctx.send(f'Error during processing the request: '

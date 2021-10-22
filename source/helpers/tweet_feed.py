@@ -16,7 +16,7 @@ class TwitterAPI:
     def __init__(self):
         self.auth = {}
         self.api = {}
-        self.stream = {}
+        self.stream = TweetStreamer('', '', '', '')
         self.user = "alhadie_"
 
     def authenticate(self):
@@ -90,6 +90,10 @@ class TwitterAPI:
         # Stream hashtag
         # self.stream.filter(track=['#WELOVEYOUTWICE'], threaded=True)
 
+    async def close_stream(self):
+        if self.stream:
+            self.stream.close()
+
 
 class TweetStreamer(tweepy.Stream):
 
@@ -97,6 +101,9 @@ class TweetStreamer(tweepy.Stream):
                  access_token_secret):
         super().__init__(consumer_key, consumer_secret, access_token, access_token_secret)
         self.bot = None
+
+    def close(self):
+        self.disconnect()
 
     def on_connection_error(self):
         print('stream error')
