@@ -142,6 +142,16 @@ async def restart(ctx):
                        f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
 
 
+@bot.command(name='stop', help='Stop bot')
+@commands.is_owner()
+async def stop(ctx):
+    try:
+        await bot.close()
+    except Exception as e:
+        await ctx.send(f'Error during processing the request: '
+                       f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
+
+
 async def update_status():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
                                                         name=f"{len(bot.guilds)} servers!"))
