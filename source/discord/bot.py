@@ -13,9 +13,9 @@ from source import bot_commands
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+TWITTER_FOLLOW_IDS = json.loads(os.getenv('TWITTER_FOLLOW_IDS'))
 
 bot = commands.Bot(command_prefix='!')
-TWITTER_FOLLOW_IDS = json.loads(os.getenv('TWITTER_FOLLOW_IDS'))
 
 
 @bot.event
@@ -85,27 +85,18 @@ async def ping(ctx):
     await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
 
 
-@bot.command(name='99', help='Responds with a random quote from Brooklyn 99')
-async def nine_nine(ctx):
+@bot.command(name='version', help='Show version')
+async def version(ctx):
     if ctx.author == bot.user:
         return
 
-    brooklyn_99_quotes = [
-        'I\'m the human form of the 💯 emoji.',
-        'Bingpot!',
-        (
-            'Cool. Cool cool cool cool cool cool cool, '
-            'no doubt no doubt no doubt no doubt.'
-        ),
-    ]
-
-    response = random.choice(brooklyn_99_quotes)
+    response = f'Bot version: {os.getenv("VERSION")}\nLast update: {bot_commands.get_file_modification_time(__file__)}'
     await ctx.send(response)
 
 
 @bot.command(name='invite', help='Invite bot to your channel')
 async def invite(ctx):
-    inv = bot_commands.getInviteEmbed(ctx)
+    inv = bot_commands.get_invite_embed(ctx)
     await ctx.author.send(embed=inv)
     await ctx.send(f'The invite link has been sent to your DM {ctx.author.mention} :D')
 

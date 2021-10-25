@@ -1,11 +1,12 @@
 import discord
 import json
 import os
+import datetime
 
 from dotenv import load_dotenv
 
 
-def getInviteEmbed(ctx):
+def get_invite_embed(ctx):
     """
     Generates Invite embed to invite bot
     Parameters:
@@ -28,3 +29,7 @@ def getInviteEmbed(ctx):
     )
 
     return embed
+
+
+def get_file_modification_time(file):
+    return datetime.datetime.fromtimestamp(os.path.getmtime(file))
