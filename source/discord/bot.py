@@ -1,7 +1,6 @@
 # bot.py
 import asyncio
 import os
-import random
 import json
 import discord
 
