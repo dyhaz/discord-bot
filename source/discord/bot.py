@@ -121,10 +121,8 @@ async def info(ctx):
 async def restart(ctx):
     try:
         await bot.close()
-        await bot.login(TOKEN)
-        await update_status()
         await bot.loop.create_task(start_stream())
-        await bot.loop.create_task(bot.run())
+        await bot.loop.create_task(bot.run(TOKEN))
         await asyncio.sleep(5)
         await ctx.send(f':warning: Bot restarted')
     except Exception as e:
