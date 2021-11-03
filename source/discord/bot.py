@@ -58,6 +58,12 @@ async def on_post_tweet(raw_data):
 
 
 @bot.event
+async def on_reaction_add(reaction, user):
+    if user.reaction.emoji == ":thumbsup:":
+        user.send(reaction.message.content)
+
+
+@bot.event
 async def on_ready():
     await update_status()
     for guild in bot.guilds:
