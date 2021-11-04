@@ -8,9 +8,10 @@ from bs4 import BeautifulSoup
 class CouponWatch():
     def __init__(self):
         self.headers = {'User-Agent': 'Mozilla/5.0'}
+        self.base_url = 'https://www.cuponation.co.id/grabfood'
 
         # setting the URL you want to monitor
-        self.url = Request('https://www.cuponation.co.id/grabfood',
+        self.url = Request(self.base_url,
                       headers=self.headers)
 
     def monitor(self):
@@ -71,7 +72,14 @@ class CouponWatch():
                 full_tag = tag.parent.parent.parent.parent.parent
                 desc = full_tag.find('h3').get_text()
                 voucher_id = full_tag.attrs['data-voucher-id']
+                url = self.get_full_url(voucher_id)
+
+                # TODO: insert data to db if not exists
+                # TODO: send message if new data
 
         # handle exceptions
         except Exception as e:
             print("Error fetching data")
+
+    def get_full_url(self, voucher_id):
+        return self.base_url + '#voucher-' + str(voucher_id)
