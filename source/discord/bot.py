@@ -126,7 +126,7 @@ async def info(ctx):
 @commands.is_owner()
 async def restart(ctx):
     try:
-        await bot.close()
+        # await bot.close()
         await bot.loop.create_task(start_stream())
         await bot.loop.create_task(bot.run(TOKEN))
         await asyncio.sleep(5)

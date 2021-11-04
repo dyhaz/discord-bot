@@ -2,3 +2,4 @@ discord
 python-dotenv
 tweepy
 python-telegram-bot
+beautifulsoup4
