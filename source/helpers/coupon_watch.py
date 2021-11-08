@@ -83,7 +83,7 @@ class CouponWatch():
                 pymysql.install_as_MySQLdb()
                 engine = create_engine(os.getenv('CONNECTION_URI'))
                 stmt = (
-                    insert(Coupon).values(name=desc[0:20], description=desc, url=url,
+                    insert(Coupon).values(name=desc.strip()[0:20], description=desc, url=url,
                                           voucher_id=int(voucher_id), is_deleted=False)
                 )
 
