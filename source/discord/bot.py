@@ -58,12 +58,6 @@ async def on_post_tweet(raw_data):
 
 
 @bot.event
-async def on_reaction_add(reaction, user):
-    if user.reaction.emoji == ":thumbsup:":
-        user.send(reaction.message.content)
-
-
-@bot.event
 async def on_ready():
     await update_status()
     for guild in bot.guilds:
@@ -128,7 +122,7 @@ async def restart(ctx):
     try:
         # await bot.close()
         await bot.loop.create_task(start_stream())
-        await bot.loop.create_task(bot.run(TOKEN))
+        # await bot.loop.create_task(bot.run(TOKEN))
         await asyncio.sleep(5)
         await ctx.send(f':warning: Bot restarted')
     except Exception as e:

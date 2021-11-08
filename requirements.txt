@@ -3,3 +3,6 @@ python-dotenv
 tweepy
 python-telegram-bot
 beautifulsoup4
+pymysql
+SQLAlchemy
+alembic
