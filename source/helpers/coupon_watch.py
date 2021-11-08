@@ -1,9 +1,13 @@
 # Importing libraries
 import time
 import hashlib
+import os
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
-from sqlalchemy import insert
+from sqlalchemy import insert, create_engine
+import pymysql
+
+from source.models.coupon import Coupon
 
 
 class CouponWatch():
@@ -13,7 +17,7 @@ class CouponWatch():
 
         # setting the URL you want to monitor
         self.url = Request(self.base_url,
-                      headers=self.headers)
+                           headers=self.headers)
 
     def monitor(self):
         # to perform a GET request and load the
@@ -75,16 +79,23 @@ class CouponWatch():
                 voucher_id = full_tag.attrs['data-voucher-id']
                 url = self.get_full_url(voucher_id)
 
-                # TODO: insert data to db if not exists
-                # stmt = (
-                #     insert(user_table).
-                #         values(name='username', fullname='Full Username')
-                # )
+                # Insert data to db if not exists
+                pymysql.install_as_MySQLdb()
+                engine = create_engine(os.getenv('CONNECTION_URI'))
+                stmt = (
+                    insert(Coupon).values(name=desc[0:20], description=desc, url=url,
+                                          voucher_id=int(voucher_id), is_deleted=False)
+                )
+
+                with engine.connect() as connection:
+                    result = connection.execute(stmt)
+
                 # TODO: send message if new data
 
         # handle exceptions
         except Exception as e:
-            print("Error fetching data")
+            print(f'Error during processing the request: '
+                           f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
 
     def get_full_url(self, voucher_id):
         return self.base_url + '#voucher-' + str(voucher_id)
