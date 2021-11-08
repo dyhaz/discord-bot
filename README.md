@@ -8,6 +8,32 @@ Description
 
 A Discord + Telegram Bot based on Tweepy.
 
+Project Structure
+------------
+```
+discord_bot
+│   README.md
+│   main.py
+│   .env
+│   alembic.ini
+│   requirements.txt  
+│
+└───alembic
+│   │   env.py
+│   │   README
+│   │
+│   └───versions
+│       │   a308fc57244b_create_coupon_table.py
+│       │   ...
+│   
+└───source
+    │   bot_commands.py
+    │   discord
+    │   helpers
+    │   models
+    │   telegram
+```
+
 Bot Commands
 ------------
 <table>

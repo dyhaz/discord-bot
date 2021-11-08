@@ -3,6 +3,7 @@ import time
 import hashlib
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
+from sqlalchemy import insert
 
 
 class CouponWatch():
@@ -75,6 +76,10 @@ class CouponWatch():
                 url = self.get_full_url(voucher_id)
 
                 # TODO: insert data to db if not exists
+                # stmt = (
+                #     insert(user_table).
+                #         values(name='username', fullname='Full Username')
+                # )
                 # TODO: send message if new data
 
         # handle exceptions
