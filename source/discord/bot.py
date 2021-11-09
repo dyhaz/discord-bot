@@ -181,7 +181,7 @@ async def start_watch():
 
 def main():
     bot.loop.create_task(start_stream(), name='stream')
-    bot.loop.create_task(start_watch(), name='watch')
+    # bot.loop.create_task(start_watch(), name='watch')
     bot.run(TOKEN)
 
 

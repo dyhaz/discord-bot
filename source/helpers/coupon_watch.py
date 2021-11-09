@@ -21,14 +21,12 @@ def insert_data(url, desc, voucher_id):
                 insert(Coupon).values(name=desc.strip()[0:20], description=desc, url=url,
                                       voucher_id=int(voucher_id), is_deleted=False)
             )
-            connection.execute(stmt)
-            return True
-
+            return connection.execute(stmt)
     return False
 
 
 class CouponWatch:
-    def __init__(self, discord_bot):
+    def __init__(self, discord_bot=None):
         self.headers = {'User-Agent': 'Mozilla/5.0'}
         self.base_url = 'https://www.cuponation.co.id/grabfood'
         self.discord_bot = None
@@ -39,11 +37,7 @@ class CouponWatch:
         self.url = Request(self.base_url,
                            headers=self.headers)
 
-    def monitor(self, bot=None):
-
-        if bot:
-            self.discord_bot = bot
-
+    def monitor(self):
         # to perform a GET request and load the
         # content of the website and store it in a var
         response = urlopen(self.url).read()
