@@ -87,17 +87,20 @@ class CouponWatch:
         try:
             response = urlopen(self.url).read()
             soup = BeautifulSoup(response, features="html.parser")
-            tags = soup.find_all(text="Kode")
+            tags = [*soup.find_all(text="Kode"), *soup.find_all(text="Penawaran")]
+            print(tags)
             for tag in tags:
                 full_tag = tag.parent.parent.parent.parent.parent
                 desc = full_tag.find('h3').get_text()
-                voucher_id = full_tag.attrs['data-voucher-id']
-                url = self.get_full_url(voucher_id)
+                if 'data-voucher-id' in full_tag.attrs:
+                    voucher_id = full_tag.attrs['data-voucher-id']
+                    url = self.get_full_url(voucher_id)
 
-                # Insert data to db if not exists
-                if insert_data(url, desc, voucher_id) and self.discord_bot:
-                    # Send new inserted data
-                    self.discord_bot.dispatch("post_coupon", desc, url)
+                    # Insert data to db if not exists
+                    res = insert_data(url, desc, voucher_id)
+                    if res and self.discord_bot:
+                        # Send new inserted data
+                        self.discord_bot.dispatch("post_coupon", desc, url)
 
         # handle exceptions
         except Exception as e:
