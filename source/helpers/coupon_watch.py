@@ -4,28 +4,50 @@ import hashlib
 import os
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
-from sqlalchemy import insert, create_engine
+from sqlalchemy import insert, select, create_engine
 import pymysql
 
 from source.models.coupon import Coupon
+
+
+def insert_data(url, desc, voucher_id):
+    pymysql.install_as_MySQLdb()
+    engine = create_engine(os.getenv('CONNECTION_URI'))
+
+    with engine.connect() as connection:
+        result = connection.execute(select(Coupon).where(Coupon.voucher_id == voucher_id))
+        if result.rowcount == 0:
+            stmt = (
+                insert(Coupon).values(name=desc.strip()[0:20], description=desc, url=url,
+                                      voucher_id=int(voucher_id), is_deleted=False)
+            )
+            connection.execute(stmt)
+            return True
+
+    return False
 
 
 class CouponWatch():
     def __init__(self):
         self.headers = {'User-Agent': 'Mozilla/5.0'}
         self.base_url = 'https://www.cuponation.co.id/grabfood'
+        self.discord_bot = None
 
         # setting the URL you want to monitor
         self.url = Request(self.base_url,
                            headers=self.headers)
 
-    def monitor(self):
+    async def monitor(self, bot = None):
+
+        if bot:
+            self.discord_bot = bot
+
         # to perform a GET request and load the
         # content of the website and store it in a var
         response = urlopen(self.url).read()
 
         # to create the initial hash
-        currentHash = hashlib.sha224(response).hexdigest()
+        current_hash = hashlib.sha224(response).hexdigest()
         print("running")
         time.sleep(10)
         while True:
@@ -34,7 +56,7 @@ class CouponWatch():
                 response = urlopen(self.url).read()
 
                 # create a hash
-                currentHash = hashlib.sha224(response).hexdigest()
+                current_hash = hashlib.sha224(response).hexdigest()
 
                 # wait for 30 seconds
                 time.sleep(30)
@@ -43,10 +65,10 @@ class CouponWatch():
                 response = urlopen(self.url).read()
 
                 # create a new hash
-                newHash = hashlib.sha224(response).hexdigest()
+                new_hash = hashlib.sha224(response).hexdigest()
 
                 # check if new hash is same as the previous hash
-                if newHash == currentHash:
+                if new_hash == current_hash:
                     continue
 
                 # if something changed in the hashes
@@ -54,11 +76,8 @@ class CouponWatch():
                     # notify
                     print("something changed")
 
-                    # again read the website
-                    response = urlopen(self.url).read()
-
-                    # create a hash
-                    currentHash = hashlib.sha224(response).hexdigest()
+                    # get coupon operation
+                    self.get_coupon_list()
 
                     # wait for 30 seconds
                     time.sleep(30)
@@ -80,17 +99,9 @@ class CouponWatch():
                 url = self.get_full_url(voucher_id)
 
                 # Insert data to db if not exists
-                pymysql.install_as_MySQLdb()
-                engine = create_engine(os.getenv('CONNECTION_URI'))
-                stmt = (
-                    insert(Coupon).values(name=desc.strip()[0:20], description=desc, url=url,
-                                          voucher_id=int(voucher_id), is_deleted=False)
-                )
-
-                with engine.connect() as connection:
-                    result = connection.execute(stmt)
-
-                # TODO: send message if new data
+                if insert_data(url, desc, voucher_id) and self.discord_bot:
+                    # Send new inserted data
+                    self.discord_bot.dispatch("post_coupon", desc, url)
 
         # handle exceptions
         except Exception as e:

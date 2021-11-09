@@ -5,6 +5,8 @@ import json
 import discord
 
 from discord.ext import commands
+
+from source.helpers.coupon_watch import CouponWatch
 from source.helpers.tweet_feed import TwitterAPI
 from dotenv import load_dotenv
 
@@ -26,6 +28,20 @@ async def on_stream_error(status_code='unknown'):
             try:
                 await c.send(f':warning: Connection error! Please contact administrator - {str(status_code)}')
             except Exception:
+                continue
+            else:
+                break
+
+
+@bot.event
+async def on_post_coupon(desc, url):
+    for guild in bot.guilds:
+        g = bot.get_guild(guild.id)
+        for c in g.channels:
+            try:
+                await c.send(desc + '\n' + url)
+            except Exception as e:
+                print(e)
                 continue
             else:
                 break
@@ -152,8 +168,16 @@ async def start_stream():
     await twitter_api.create_stream(discord_bot=bot)
 
 
+async def start_watch():
+    # Initialize coupon watch
+    watcher = CouponWatch()
+    await asyncio.sleep(10)
+    await watcher.monitor()
+
+
 def main():
     bot.loop.create_task(start_stream())
+    bot.loop.create_task(start_watch())
     bot.run(TOKEN)
 
 
