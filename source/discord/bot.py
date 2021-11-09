@@ -1,5 +1,6 @@
 # bot.py
 import asyncio
+from threading import Thread
 import os
 import json
 import discord
@@ -170,14 +171,17 @@ async def start_stream():
 
 async def start_watch():
     # Initialize coupon watch
-    watcher = CouponWatch()
+    watcher = CouponWatch(discord_bot=bot)
     await asyncio.sleep(10)
-    await watcher.monitor()
+
+    # Initialize thread
+    t1 = Thread(target=watcher.monitor)
+    t1.start()
 
 
 def main():
-    bot.loop.create_task(start_stream())
-    bot.loop.create_task(start_watch())
+    bot.loop.create_task(start_stream(), name='stream')
+    bot.loop.create_task(start_watch(), name='watch')
     bot.run(TOKEN)
 
 

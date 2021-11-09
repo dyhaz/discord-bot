@@ -27,17 +27,19 @@ def insert_data(url, desc, voucher_id):
     return False
 
 
-class CouponWatch():
-    def __init__(self):
+class CouponWatch:
+    def __init__(self, discord_bot):
         self.headers = {'User-Agent': 'Mozilla/5.0'}
         self.base_url = 'https://www.cuponation.co.id/grabfood'
         self.discord_bot = None
+        if discord_bot:
+            self.discord_bot = discord_bot
 
         # setting the URL you want to monitor
         self.url = Request(self.base_url,
                            headers=self.headers)
 
-    async def monitor(self, bot = None):
+    def monitor(self, bot=None):
 
         if bot:
             self.discord_bot = bot
@@ -109,4 +111,5 @@ class CouponWatch():
                            f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
 
     def get_full_url(self, voucher_id):
+        # return the full url of current voucher_id
         return self.base_url + '#voucher-' + str(voucher_id)
