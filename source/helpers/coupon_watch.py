@@ -26,10 +26,14 @@ def insert_data(url, desc, voucher_id):
 
 
 class CouponWatch:
-    def __init__(self, discord_bot=None):
+    def __init__(self, discord_bot=None, base_url=None):
         self.headers = {'User-Agent': 'Mozilla/5.0'}
         self.base_url = 'https://www.cuponation.co.id/grabfood'
         self.discord_bot = None
+
+        if base_url:
+            self.base_url = base_url
+
         if discord_bot:
             self.discord_bot = discord_bot
 

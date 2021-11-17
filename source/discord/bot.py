@@ -171,17 +171,23 @@ async def start_stream():
 
 async def start_watch():
     # Initialize coupon watch
-    watcher = CouponWatch(discord_bot=bot)
-    await asyncio.sleep(10)
+    watcher1 = CouponWatch(discord_bot=bot, base_url='https://www.cuponation.co.id/grabfood')
+    await asyncio.sleep(5)
+
+    watcher2 = CouponWatch(discord_bot=bot, base_url='https://www.cuponation.co.id/gojek-voucher')
+    await asyncio.sleep(5)
 
     # Initialize thread
-    t1 = Thread(target=watcher.monitor)
+    t1 = Thread(target=watcher1.monitor)
     t1.start()
+
+    t2 = Thread(target=watcher2.monitor)
+    t2.start()
 
 
 def main():
     bot.loop.create_task(start_stream(), name='stream')
-    # bot.loop.create_task(start_watch(), name='watch')
+    bot.loop.create_task(start_watch(), name='watch')
     bot.run(TOKEN)
 
 
