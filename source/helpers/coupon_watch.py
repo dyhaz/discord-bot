@@ -15,7 +15,7 @@ def insert_data(url, desc, voucher_id):
     engine = create_engine(os.getenv('CONNECTION_URI'))
 
     with engine.connect() as connection:
-        result = connection.execute(select(Coupon).where(Coupon.voucher_id == voucher_id))
+        result = connection.execute(select(Coupon).where(Coupon.voucher_id == voucher_id and Coupon.url == url))
         if result.rowcount == 0:
             stmt = (
                 insert(Coupon).values(name=desc.strip()[0:20], description=desc, url=url,
