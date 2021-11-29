@@ -41,21 +41,33 @@ class CouponWatch:
         self.url = Request(self.base_url,
                            headers=self.headers)
 
-    def monitor(self):
-        # to perform a GET request and load the
-        # content of the website and store it in a var
-        response = urlopen(self.url).read()
+    def watch_coupon(self):
+        while True:
+            if self.monitor():
+                # get coupon operation
+                self.get_coupon_list()
 
-        # to create the initial hash
-        current_hash = hashlib.sha224(response).hexdigest()
+                # wait for 30 seconds
+                time.sleep(30)
+                self.watch_coupon()
+
+    def watch_product(self):
+        while True:
+            if self.monitor():
+                # wait for 30 seconds
+                time.sleep(30)
+                self.watch_product()
+
+    def monitor(self):
         print("running")
         time.sleep(10)
         while True:
             try:
-                # perform the get request and store it in a var
+                # to perform a GET request and load the
+                # content of the website and store it in a var
                 response = urlopen(self.url).read()
 
-                # create a hash
+                # to create the initial hash
                 current_hash = hashlib.sha224(response).hexdigest()
 
                 # wait for 30 seconds
@@ -75,17 +87,12 @@ class CouponWatch:
                 else:
                     # notify
                     print("something changed")
-
-                    # get coupon operation
-                    self.get_coupon_list()
-
-                    # wait for 30 seconds
-                    time.sleep(30)
-                    continue
+                    return True
 
             # To handle exceptions
             except Exception as e:
                 print("error")
+                return False
 
     def get_coupon_list(self):
         try:

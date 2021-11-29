@@ -177,12 +177,18 @@ async def start_watch():
     watcher2 = CouponWatch(discord_bot=bot, base_url='https://www.cuponation.co.id/gojek-voucher')
     await asyncio.sleep(5)
 
+    watcher3 = CouponWatch(discord_bot=bot, base_url='https://www.cuponation.co.id/20-teratas')
+    await asyncio.sleep(5)
+
     # Initialize thread
-    t1 = Thread(target=watcher1.monitor)
+    t1 = Thread(target=watcher1.watch_coupon)
     t1.start()
 
-    t2 = Thread(target=watcher2.monitor)
+    t2 = Thread(target=watcher2.watch_coupon)
     t2.start()
+
+    t3 = Thread(target=watcher3.watch_coupon)
+    t3.start()
 
 
 def main():
