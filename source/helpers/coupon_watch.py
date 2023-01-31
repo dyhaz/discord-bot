@@ -6,7 +6,9 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 from sqlalchemy import insert, select, create_engine
 import pymysql
+import re
 
+from source.helpers.web_parser import WebParser
 from source.models.coupon import Coupon
 
 
@@ -54,6 +56,9 @@ class CouponWatch:
     def watch_product(self):
         while True:
             if self.monitor():
+                # get product
+                self.get_product_info()
+
                 # wait for 30 seconds
                 time.sleep(30)
                 self.watch_product()
@@ -93,6 +98,15 @@ class CouponWatch:
             except Exception as e:
                 print("error")
                 return False
+
+    def get_product_info(self):
+        try:
+            web_parse = WebParser(url=self.url)
+            web_parse.get_price()
+        # handle exceptions
+        except Exception as e:
+            print(f'Error during processing the request: '
+                  f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
 
     def get_coupon_list(self):
         try:

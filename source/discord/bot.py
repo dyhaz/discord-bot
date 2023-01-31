@@ -157,6 +157,16 @@ async def stop(ctx):
                        f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
 
 
+@bot.command(name='watch', help='Watch site')
+async def watch(ctx, arg):
+    try:
+        watcher1 = CouponWatch(discord_bot=bot, base_url='https://www.cuponation.co.id/grabfood')
+        await bot.loop.create_task(watcher1.watch_product())
+    except Exception as e:
+        await ctx.send(f'Error during processing the request: '
+                       f'{type(e).__name__} at line {e.__traceback__.tb_lineno} of {__file__}: {e}')
+
+
 async def update_status():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching,
                                                         name=f"{len(bot.guilds)} servers!"))
